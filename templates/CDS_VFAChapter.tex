@@ -71,15 +71,15 @@
 	The particular problematics of terrain modeling span a broad range of quantitative and qualitative analysis tasks. Such tasks include, but are not limited to geometric representation, geomorphological feature identification and analysis, vegetation coverage analysis and extraction. The continuous advancements of 3D sensor scanning technologies and the increasing popularity of civil aerial drones further facilitate gathering high density point cloud 
 	terrain representations. 
 	
-	In this chapter, we describe an approach for multiresolution analysis of multivariate terrain data, which is also suitable for other data organized in similar structures. In general, the framework we propose can be easily adapted for performing multiresolution analysis on triangulated point clouds, meshes or graphs. Any of these data structures may describe an irregular domain where a multivariate signal is discretized. These samples are then concentrated in the vertices of these structures.
+	In this chapter, we describe an approach for multiresolution analysis of multivariate terrain data, which is also suitable for other data organized in similar structures. In general, the framework we propose can be easily adapted for performing multiresolution analysis on triangulated point clouds, meshes or graphs. Any of these data structures may describe an irregular domain where a multivariate signal is discretized. The samples are then concentrated in the vertices of these structures.
 	
-	Given these aspects, the approach we will further describe capitalizes on recently developed methods for graph signal processing. More specifically, we explore a wavelet-based graph multiresolution construction having a reduced approximation error and is computationally efficient. The graph wavelet interpretation facilitates tasks involving \emph{vertex frequency analysis} or \emph{multiresolution filtering and clustering}.
+	Given these aspects, the approach we will further describe capitalizes on recently developed methods for graph signal processing. More specifically, we explore a wavelet-based graph multiresolution construction that has a reduced approximation error and is computationally efficient. The graph wavelet interpretation facilitates tasks involving \emph{vertex frequency analysis} or \emph{multiresolution filtering and clustering}.
 	
 	
 	\subsection{Terrain data representation}
 	Typically, the geometric information describing terrain fragments is encoded in a
 	digital elevation model (DEM) \cite{vanKreveld1997}. A triangulated irregular network (TIN) is a further
-	specialization of a DEM where both point and primitive (triangle) sampling is allowed to be irregular,) reducing the highly redundant mation in flat (inf regions.
+	specialization of a DEM where both point and primitive (triangle) sampling are allowed to be irregular, reducing the highly redundant information in flat regions.
 	De Floriani and Magillo \cite{Floriani2016} provide the following definition:
 	
 	\begin{quotation}
@@ -104,17 +104,17 @@
 	approaches, we mention \emph{incremental thinning}, where geometric primitives are simply removed by following a local quality-based simplification criterion. For TIN models,
 	Demaret et al. \cite{Demaret2005} have proposed an efficient coarsification algorithm via incremental point removal.
 	
-	Suarez and Plaza \cite{Suarez2009} have introduced a coarsening algorithm applicable to RTINs (right-triangulated irregular networks). Their method is especially efficient
+	Suarez and Plaza \cite{Suarez2009} have introduced a coarsening algorithm applicable to right-triangulated irregular networks. Their method is especially efficient
 	given that both the underlying geometry and triangle primitive connectivity is easier to control than in the case of general irregular networks as each vertex has a maximum of
 	8 directly connected neighbors. The actual coarsening is then achieved through edge midpoint split operations, which are also invertible.
 	
 	Another problem posed by raw point clouds is that there is no immediate and accurate information concerning the ground or vegetation class of constituent points.
 	While ground return information can help define a subset of soil-level points, the overall point cloud usually contains more ground-level information, as well as potentially
 	unclassified data points.
-	Evans and Hudak \cite{Evans2007} have designed a \emph{multiscale curvature classification algorithm} (MCC) in order to filter and classify points present in raw LiDAR collections.
+	Evans and Hudak \cite{Evans2007} have designed a \emph{multiscale curvature classification algorithm} in order to filter and classify points present in raw LiDAR collections.
 	
 	Silva et al. \cite{Silva2018} examine four different algorithms for classifying ground from hovering points in point cloud terrain data sets. Among the algorithms discussed 
-	in their work, the Progressive Triangulated Irregular Network (PTIN), implemented in the LAStools package \cite{Isenburg2015}, was proven to possess good performance characteristics
+	in their work, the progressive triangulated irregular network, implemented in the LAStools package \cite{Isenburg2015}, was proven to possess good performance characteristics
 	(low RMSE and increased ground classification accuracy with respect to the ground truth). 
 	
 	
@@ -131,7 +131,7 @@
 	also facilitates the creation of reversible, continuous level-of-detail representations and mesh morphing. Schroeder et al. \cite{Schroeder1992} were among the first authors to discuss triangular mesh simplification in a step-by-step manner known as \emph{decimation}. Almost all decimation-based methods require the existence of a decimation criterion and can be summarized in two steps that are repeated until the target density is reached:
 	\emph{(i)} evaluate decimation criterion (usually a cost function estimating the impact of removing a set of primitives) and \emph{(ii)} remove a primitive and re-triangulate the local geometry.
 	
-	To address changes in the mesh connectivity resulting from primitive removal, Ronfard et al. \cite{Ronfard1996} proposed a reversible operation called \emph{edge collapse}. One of the most effective heuristic criteria for guiding these operations is the \emph{quadric error metric} formulation of Garland and Heckbert \cite{Garland1998}.
+	To address changes in the mesh connectivity resulting from primitive removal, Ronfard et al. \cite{Ronfard1996} proposed a reversible operation called \emph{edge collapse}. One of the most effective heuristic criteria for guiding these operations is the \emph{quadric error metric (QEM)} formulation of Garland and Heckbert \cite{Garland1998}.
 	
 	\subsubsection{Wavelet multiresolution methods}
 	Successful initiatives for adapting established Signal Processing methods for
@@ -163,7 +163,7 @@
 	f_{j+1} = \Phi_{j+1} \mathbf{s}_{j+1},
 	\label{eq_cds:f_in_j_plus_one}
 	\end{equation}
-	where $\mathbf{s}_{j+1}$ is an infinite column vector of \emph{scaling coefficients}. The  complementary basis or \emph{wavelet functions}, $\psi_{j,k}$, that generate the orthogonal subspace, $W_j$, with $V_{j+1} = V_j \oplus W_j$, correspond to the lost details. One can hence write
+	where $\mathbf{s}_{j+1}$ is an infinite column vector of \emph{scaling coefficients}. The  complementary basis or \emph{wavelet functions}, $\psi_{j,k}$, that generate the orthogonal subspace, correspond to the lost details $W_j$. Thus, the \emph{direct sum decomposition} of the higher-resolution approximation, $V_{j+1} = V_j \oplus W_j$,  can be expressed in terms of basis and wavelet functions as
 	\begin{equation}
 	f_{j+1} = \Phi_{j+1}\mathbf{s}_{j+1} = \Phi_j \mathbf{s}_j + \Psi_j \mathbf{w}_j,
 	\label{eq_cds:f_in_j}
@@ -176,14 +176,14 @@
 	\mathbf{s}_{j+1,k} & = & \left< \tilde{\phi}_{j+1,k}, f_{j+1} \right>,
 	\label{eq_cds:inner1}\\
 	\mathbf{s}_{j,k} & = & \left< \tilde{\phi}_{j,k}, f_{j+1} \right>, \label{eq_cds:inner2}\\
-	\mathbf{w}_{j,k} & = & \left< \tilde{\psi}_{j,k}, f_{j+1} \right>.
+	\mathbf{w}_{j,k} & = & \left< \tilde{\psi}_{j,k}, f_{j+1} \right>,
 	\label{eq_cds:inner3}
 	\end{eqnarray}
-	
+	where $\tilde{\phi}_{j,k}$ and $ \tilde{\psi}_{j,k}$ denote the $k$-th scaling and wavelet basis functions at level $j$.
 	%%%%
 	
 	\subsubsection{Second generation wavelets}
-	Let $\mathbf{x} = (x_k)_{z\in \mathbb{Z}}$ be an infinite sampled signal.
+	Let $\mathbf{x} = (x_k)_{k\in \mathbb{Z}}$ be an infinite sampled signal.
 	
 	The first operation involved in the lifting procedure is called a \emph{split} or \emph{parity assignment}. To this effect, the signal is divided into two sets, an even set, corresponding to $\mathbf{x}_e = (x_{2k})_{k\in \mathbb{Z}}$ and an odd set, corresponding to $\mathbf{x}_o = (x_{2k+1})_{k\in\mathbb{Z}}$.
 	
@@ -252,11 +252,11 @@
 	\begin{bmatrix}\Psi_j & \Phi_j \end{bmatrix} \begin{bmatrix}  \mathbf{s}_{j+1,o} - \mathbf{P}_j \mathbf{s}_{j+1,e} \\ (\mathbf{I} - \mathbf{U}_j \mathbf{P}_j)\mathbf{s}_{j+1,e} + \mathbf{U}_j \mathbf{s}_{j+1,o} \end{bmatrix}.
 	\label{eq_cds:lifting_matrix_form}
 	\end{equation}
-	Equation (\ref{eq_cds:lifting_matrix_form}) must hold for any combination of the level $j+1$ lifting coefficients. Hence, let $\mathbf{s}_{j+1,e} = \mathbf{\delta}_k$, i.e. the Kronecker vector at index $k$, with $k \in \overline{1,n_e}$, i.e. $\delta_{k,i} = 0, \forall k \neq i$ and $\delta_{k,k} = 1$. Also, let $\mathbf{s}_{j+1,o} = \mathbf{0}$. Evaluating both sides of equation (\ref{eq_cds:lifting_matrix_form}), we arrive to
+	Equation (\ref{eq_cds:lifting_matrix_form}) must hold for any combination of the level $j+1$ lifting coefficients. Hence, let $\mathbf{s}_{j+1,e} = \boldsymbol{\delta}_k$, i.e. the Kronecker vector at index $k$, with $k \in \overline{1:n_e}$, i.e. $\delta_{k,i} = 0, \forall k \neq i$ and $\delta_{k,k} = 1$. Also, let $\mathbf{s}_{j+1,o} = \mathbf{0}$. Evaluating both sides of equation (\ref{eq_cds:lifting_matrix_form}), we arrive to
 	\begin{equation}
 	\Phi_{j+1,e}\delta_k = -\Psi_j\mathbf{P}_j\delta_k + \Phi_j \delta_k - \Phi_j \mathbf{U}_j\mathbf{P}_j \delta_k,
 	\end{equation}
-	or, since this equation holds for any $k \in \overline{1, n_e}$, a more direct formulation can be written as
+	or, since this equation holds for any $k \in \overline{1: n_e}$, a more direct formulation can be written as
 	\begin{equation}
 	\Phi_{j+1,e}= -\Psi_j\mathbf{P}_j + \Phi_j  - \Phi_j \mathbf{U}_j\mathbf{P}_j.
 	\label{eq_cds:even_primal}
@@ -351,7 +351,7 @@
 	\label{eq_cds:synthesis_even}
 	\end{equation}
 	Cascading the analysis stages yields a hierarchical wavelet decomposition of the initial mesh. The method stores the intermediary difference vectors $\mathbf{w}_{l,V_{o_{l+1}}}$ and the 
-	coarsest level scaling coefficients, $\mathbf{s}_{0, V_{e_0}}$, with $l \in \overline{0,L}$. In order to recover the initial information, the intermediary filter matrices, $\mathbf{P}_l$ and
+	coarsest level scaling coefficients, $\mathbf{s}_{0, V_{e_0}}$, with $l \in \overline{0:L}$. In order to recover the initial information, the intermediary filter matrices, $\mathbf{P}_l$ and
 	$\mathbf{U}_l$, also need to be stored.
 	
 	\subsection{Graph-based lifting scheme operations}
@@ -359,7 +359,7 @@
 	
 	\subsubsection{Lazy wavelet partitioning}
 	Our choice of a heuristic feature preservation mechanism is the
-	\emph{generalized quadric error metric}, detailed by Garland and Heckbert \cite{Garland1998}. The goal of this metric is to facilitate computing the squared distances from any point to the support plane of a triangle. For the remainder of this discussion, we will refer to vertices and their attributes as elements from the $\mathbb{R}^n$ vector space, where the first three components are the geometric coordinates and the rest $n-3$ represent the attribute data.
+	\emph{generalized quadric error metric}, detailed by Garland and Heckbert \cite{Garland1998}. The goal of this metric is to facilitate computing the squared distances from any point to the support plane of a triangle. For the remainder of this discussion, we will refer to vertices and their attributes as elements from the $\mathbb{R}^n$ vector space, where the first three components are the geometric coordinates and the remaining $n-3$ represent the attribute data.
 	
 	
 	Let $\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3 \in \mathbb{R}^n$ be column vectors corresponding to the vertices of a triangle and $\mathbf{p} \in \mathbb{R}^n$  an arbitrary point.
@@ -400,14 +400,14 @@
 	
 	The evaluation of the discrete Gaussian curvature, denoted as $K(\mathbf{v})$, and  of the mean curvature, denoted as $H(\mathbf{v})$, can be performed as suggested by \cite{Meyer2003}. Although such estimates are known to be sensitive to noise, the data typically resulting from LiDAR sets do not exhibit irregularities that could affect the robustness. Regardless of this drawback, a curvature-based energy represents a natural measure for local geometric saliency over a one-ring neighborhood. In \cite{Cioaca2016, Cioaca2016CEAI} we further discuss potential alternatives for use on data heavily affected by noise.
 	
-	To evaluate the discrete version of integral (\ref{eq_cds:bendingEnergy}), we can use the Gaussian and mean curvatures to compute the sum of squared principal curvatures, or $\kappa_1^2 + \kappa_2^2 = 4H^2 - 2K  $. The discrete counterpart of this integral then provides an estimate for the discrete bending energy concentrated at each vertex $\mathbf{v}_i$ and is computed over its one-ring neighborhood. We evaluate the discretized bending energy as 
+	To evaluate the discrete version of integral (\ref{eq_cds:bendingEnergy}), we can use the Gaussian curvature, $K$, and the mean curvature, $H$, to compute the sum of squared principal curvatures as $\kappa_1^2 + \kappa_2^2 = 4H^2 - 2K  $. The discrete counterpart of this integral then provides an estimate for the discrete bending energy concentrated at each vertex $\mathbf{v}_i$ and is computed over its one-ring neighborhood. We evaluate the discretized bending energy near a vertex $\mathbf{v}_i$ as 
 	
 	\begin{equation}
 	\label{eq_cds:bendingEnergyDiscrete}
 	E_{b}(\mathbf{{v}}_i) = \sum_{\Delta({\mathbf{{v}}_i,\mathbf{{v}}_j,\mathbf{{v}}_k}) \in \mathcal{N}_f^1(\mathbf{{v}}_i)} 
 	\frac{f(\mathbf{{v}}_i) + f(\mathbf{{v}}_j) + f(\mathbf{{v}}_k)}{6} \cdot \left\lVert (\mathbf{{v}}_j - \mathbf{{v}}_i) \times (\mathbf{{v}}_k - \mathbf{{v}}_i) \right\rVert,
 	\end{equation}
-	where $f \equiv (\kappa_1^2 + \kappa_2^2)$.
+	where $f \equiv (\kappa_1^2 + \kappa_2^2)$ and  $\mathcal{N}_f^1(\mathbf{{v}}_i)$ is the set of all incident triangles, denoted by $\Delta({\mathbf{{v}}_i,\mathbf{{v}}_j,\mathbf{{v}}_k})$,  at $\mathbf{v}_i$.
 	
 	
 	We summarize the calculation process of the discrete version of equation (\ref{eq_cds:bendingEnergy}) in algorithm \ref{alg_cds:thin_plate_energy}.
