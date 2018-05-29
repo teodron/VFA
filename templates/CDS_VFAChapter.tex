@@ -196,7 +196,7 @@
 	
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=\textwidth]{lifting_diagram}
+		\includegraphics[width=0.7\textwidth]{lifting_diagram_block}
 		\caption{The \emph{lifting scheme} diagram: Splitting (equation (\ref{eq_cds:lifting_splitting})) is followed by prediction via equation (\ref{eq_cds:coeff_predict}) and then by the updating of the low resolution output via equation (\ref{eq_cds:coeff_update}).}
 		\label{fig_cds:lifting_diagram}
 	\end{figure}
@@ -435,7 +435,7 @@
 	%\begin{figure}[!htbp]
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=.9\linewidth]{oneRingCost.pdf}
+		\includegraphics[width=.8\linewidth]{one-RingCost.pdf}
 		%
 		\caption{\label{fig_cds:oneRingCost}
 			The cost of removing $\mathbf{v}_i$ with respect to its one-ring neighbours. Each $\mathbf{v}_j \in \mathcal{N}_v^1(\mathbf{v}_i)$ contributes
@@ -473,7 +473,7 @@
 	%\begin{figure}[htb]
 	\begin{figure}[t]
 		\centering 
-		\includegraphics[width=.95\columnwidth]{forbidden_collapses.pdf} 
+		\includegraphics[width=.95\columnwidth]{forbidden_collapse_cases.pdf} 
 		\caption{Illegal collapse situations where the highlighted faces are involved in a breaching of one or several criteria of the $\mathtt{can\_triangulate}$ function from algorithm  \ref{alg_cds:labelling}. In case a), the collapse "welds" together two faces, back-to-back, introducing an edge common to more than two triangles. In situation b), the highlighted face is "flipped" since the normal unit vectors before and after the collapse point in opposite directions. "Cutting a corner" is the operation depicted in situation c), where the corner vertex is no longer adjacent to at least two edges.} 
 		\label{fig_cds:forbidden_collapses} 
 	\end{figure}
@@ -611,7 +611,7 @@
 	
 	\begin{figure}[htb]
 		\centering
-		\includegraphics[width=.7\linewidth]{overview_downsampling.pdf}
+		\includegraphics[width=.5\linewidth]{overview_downsampling_alg.pdf}
 		%
 		\caption{\label{fig_cds:overview_downsampling}
 			An overview of our hybrid algorithm for downsampling an input set.}
@@ -631,12 +631,12 @@
 	\subsubsection{Quadric error matrix update procedure}
 	The quadric error metric matrix fusion of collapsed vertex pairs is a property that we adapt locally, in the odd vertex neighborhood. We achieve this by distributing the matrix corresponding to an odd sample, $\mathbf{Q}({\mathbf{v}_{o_{j+1}}})$, among its even neighbors. Thus, each even matrix is updated by
 	\begin{equation}
-	\mathbf{Q}({\mathbf{v}_{e_j}}) = \mathbf{Q}({\mathbf{v}_{e_{j+1}}}) + \sum\limits_{\mathbf{v}_{o_{j+1}} \in \mathcal{N}^1_v(\mathbf{v}_{e_{j+1}}) \cap V_{o_{j+1}} } { \rho{j, \mathbf{v}_{e_{j+1}} }(  \mathbf{v}_{o_{j+1}}) \mathbf{Q}({ \mathbf{v}_{o_{j+1}}} )} ,
+	\mathbf{Q}({\mathbf{v}_{e_j}}) = \mathbf{Q}({\mathbf{v}_{e_{j+1}}}) + \sum\limits_{\mathbf{v}_{o_{j+1}} \in \mathcal{N}^1_v(\mathbf{v}_{e_{j+1}}) \cap V_{o_{j+1}} } { \rho_{j, \mathbf{v}_{e_{j+1}} }(  \mathbf{v}_{o_{j+1}}) \mathbf{Q}({ \mathbf{v}_{o_{j+1}}} )} ,
 	\label{eq_cds:qem_update}
 	\end{equation}
-	where $\rho{j, \mathbf{v}_{e_{j+1}} }(  \mathbf{v}_{o_{j+1}})$ is the redistribution weight describing the influence of $ \mathbf{v}_{o_{j+1}}$ on its even neighbor, $\mathbf{v}_{e_{j+1}}$. We propose using the same weights that the prediction filter relies on estimating the lost information, i.e.,
+	where $\rho_{j, \mathbf{v}_{e_{j+1}} }(  \mathbf{v}_{o_{j+1}})$ is the redistribution weight describing the influence of $ \mathbf{v}_{o_{j+1}}$ on its even neighbor, $\mathbf{v}_{e_{j+1}}$. We propose using the same weights that the prediction filter relies on estimating the lost information, i.e.,
 	\begin{equation}
-	\rho{j, \mathbf{v}_{e_{j+1}} }(  \mathbf{v}_{o_{j+1}}) =  \frac{p_{j, \mathbf{v}_{o_{j+1}} }(  \mathbf{v}_{e_{j+1}})}
+	\rho_{j, \mathbf{v}_{e_{j+1}} }(  \mathbf{v}_{o_{j+1}}) =  \frac{p_{j, \mathbf{v}_{o_{j+1}} }(  \mathbf{v}_{e_{j+1}})}
 	{ \sum_{\mathbf{v}_{u_{j+1}} \in \mathcal{N}^1_v(  \mathbf{v}_{o_{j+1}}) } { p_{j, \mathbf{v}_{o_{j+1}} }(  \mathbf{v}_{u_{j+1}}) }}.
 	\label{eq_cds:qem_weights}
 	\end{equation} 
@@ -739,7 +739,7 @@
 	\end{figure}
 	
 	\section{Conclusions}
-	Several conclusions can be drawn by analyzing the results obtained using the different lifting designs. First, by using the update designs that are not guaranteed to preserve the signal average for general graphs (e.g. \cite{ Martinez2011}), we observe the RMSE levels have the highest values, regardless of the prediction filter design. As such, the charts \ref{fig_cds:smokey_lod_rmse}a, \ref{fig_cds:fundata_lod_rmse}a and \ref{fig_cds:iezer_lod_rmse}a reveal that over a progression of 12 analysis steps, the uniform weighing prediction design (\textbf{UG}) is, on average, the better choice. While the geometric Laplacian (\textbf{GL}) and the non-negative least squares weights (\textbf{NNLS}) yield better quality results, after  6 or 7 decomposition steps they become unstable. The use of the cotangent Laplacian weights (\textbf{CL}) is not justified either, since this design takes into account only the geometric structure of the data, regardless of the attribute variability. Overall, both uniform and cotangent Laplacian weights produce more stable results, but the uniform design is to be preferred due to its consistently lower RMSE levels. Next, directly preserving the average of the scale coefficients in a one-ring neighborhood (\textbf{ORMP}) contributes to both  stability and error-minimizing properties of the analysis sequence for all sets (charts \ref{fig_cds:smokey_lod_rmse}b, \ref{fig_cds:fundata_lod_rmse}b and \ref{fig_cds:iezer_lod_rmse}b). The best results are, however, achieved through the use of the minimum norm, mean preserving update weights (proposed by Jansen et al. \cite{Jansen2001}). This design ensures the highest stability while sensibly decreasing the mean square error. More specifically, for all terrain sets the \textbf{ORMP} design is surpassed by the combined use of Laplacian prediction weights and the minimum norm update vector coefficients. Both of our proposals, the geometric Laplacian (\textbf{GLMN}) and the non-negative least squares (\textbf{NNLSMN}) attain an almost twofold accuracy over the cotangent (\textbf{CLMN}) and uniform weights Laplacian (\textbf{UGMN}). While the RMSE could be reduced even further by lifting the constraints on the least squares prediction filter, as proposed in \cite{Wagner2005} and in \cite{Martinez2011}, the scheme becomes numerically unstable due to both the potentially very high values of the weights and the prediction of the boundary vertices. While we can fix the boundary vertices and alleviate the stability issue, our design does not require such vertex selection constraints to be applied.
+	Several conclusions can be drawn by analyzing the results obtained using the different lifting designs. First, by using the update designs that are not guaranteed to preserve the signal average for general graphs (e.g. \cite{ Martinez2011}), we observe the RMSE levels have the highest values, regardless of the prediction filter design. As such, the charts \ref{fig_cds:smokey_lod_rmse}a, \ref{fig_cds:fundata_lod_rmse}a and \ref{fig_cds:iezer_lod_rmse}a reveal that over a progression of 12 analysis steps, the uniform weighing prediction design (\textbf{UG}) is, on average, the better choice. While the geometric Laplacian (\textbf{GL}) and the non-negative least squares weights (\textbf{NNLS}) yield better quality results, after  6 or 7 decomposition steps they become unstable. The use of the cotangent Laplacian weights (\textbf{CL}) is not justified either, since this design takes into account only the geometric structure of the data, regardless of the attribute variability. Overall, both uniform and cotangent Laplacian weights produce more stable results, but the uniform design is to be preferred due to its consistently lower RMSE levels. Next, directly preserving the average of the scale coefficients in a one-ring neighborhood (\textbf{ORMP}) contributes to both  stability and error-minimizing properties of the analysis sequence for all sets (charts \ref{fig_cds:smokey_lod_rmse}b, \ref{fig_cds:fundata_lod_rmse}b and \ref{fig_cds:iezer_lod_rmse}b). The best results are, however, achieved through the use of the minimum norm, mean preserving update weights (proposed by Jansen et al. \cite{Jansen2001}). This design ensures the highest stability while sensibly decreasing the mean square error. More specifically, for all terrain sets the \textbf{ORMP} design is surpassed by the combined use of Laplacian prediction weights and the minimum norm update vector coefficients. Both of our proposals, the geometric Laplacian (\textbf{GLMN}) and the non-negative least squares (\textbf{NNLSMN}) attain an almost twofold accuracy over the cotangent (\textbf{CLMN}) and uniform weights Laplacian (\textbf{UGMN}). While the RMSE could be reduced even further by lifting the constraints on the least squares prediction filter, as proposed in \cite{Wagner2005} and in \cite{Martinez2011}, the scheme becomes numerically unstable due to overfitting of the prediction weights values and the prediction of the boundary vertices. While we can fix the boundary vertices and alleviate the stability issue, our design does not require such vertex selection constraints to be applied.
 	
 	The multiresolution experiments conducted with the three samples also confirm the 25\% reduction ratio of the number of vertices after each downsampling step. More specifically, the average reduction rate attained for the Smoky set (figure \ref{fig_cds:smokey_lod_rmse}) is 27\%, for the high-density Carpathian set (figure \ref{fig_cds:fundata_lod_rmse}) the average ratio is 28\%, and for the low-density Carpathian set (figure \ref{fig_cds:iezer_lod_rmse})  this average ratio is 27\%.
 	
