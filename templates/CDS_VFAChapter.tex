@@ -35,7 +35,7 @@
 %\usepackage{subcaption}
 \usepackage{relsize}
 \usepackage{url}
-
+\usepackage{bbm}
 % see the list of further useful packages
 % in the Reference Guide
 
@@ -233,7 +233,7 @@
 	\mathbf{s}_j = \mathbf{s}_{j+1,e} + \mathbf{U}_j \mathbf{w}_j,
 	\label{eq_cds:coeff_update}
 	\end{equation}
-	with $\mathbf{P}_j \in \mathbb{R}^{n_o \times n_e}$ being a sparse prediction matrix, $\mathbf{U}_j \in \mathbb{R}^{n_e \times n_o}$ being a sparse update matrix and $n_o$ and $n_e$ being the number of odd and even coefficients, respectively. The prediction stage simply exploits the signal redundancy by assuming that the odd coefficients can be estimated as linear combinations of their spatial neighbors. If only the even coefficients are used to approximate the functions in $V_{j+1}$, then the lost details are compensated for by redistributing them among these remaining coefficients via the update matrix. 
+	with $\mathbf{P}_j \in \mathbb{R}^{n_{j+1,o} \times n_{j+1,e}}$ being a sparse prediction matrix, $\mathbf{U}_j \in \mathbb{R}^{n_{j+1,e} \times n_{j+1,o}}$ being a sparse update matrix and $n_{j+1,o}$ and $n_{j+1,e}$ being the number of odd and even coefficients, respectively, at level $j+1$. The prediction stage simply exploits the signal redundancy by assuming that the odd coefficients can be estimated as linear combinations of their spatial neighbors. If only the even coefficients are used to approximate the functions in $V_{j+1}$, then the lost details are compensated for by redistributing them among these remaining coefficients via the update matrix. 
 	
 	
 	Since equations (\ref{eq_cds:inner1} - \ref{eq_cds:inner3}) hold for any $f_{j+1}$, we can write the predict and update equations for the duals basis functions:
@@ -305,17 +305,16 @@
 	\subsubsection{Wavelet construction for multivariate graph signals}
 	
 	%Returning to our parallel with the trivial, one-dimensional construction,
-	We examine now the changes necessary to go from the above one-dimensional construction to signals defined on graphs.
-	The place of time series indices is taken by the nodes of the graph, where the information is concentrated.
+	We examine now the changes necessary to go from the above one-dimensional construction to multivariate signals defined on graphs. In general, we are interested in analyzing a function $F(\mathbf{v})$ defined at every vertex $\mathbf{v}$ of the graph. We regard the vertices as having vector coordinates in $\mathbb{R}^n$. The purpose is to find appropriate scaling and wavelet function bases that are independent of the multivariate signal itself, but depend on the graph topology and its edge lengths. Thus, the framework construction we propose must also accommodate both univariate and multivariate functions by treating the latter as tuples of scalar-valued functions. 
+	Instead of discussing about time series indices, we now view the graph nodes as means to identify samples where the information is concentrated.
 	The odd-even split is extended to graph vertices, denoting $V_{o_l}$ and $V_{e_l}$
 	the odd and even subsets at level $l$, respectively.
 	The notion of parity is irrelevant for graphs, the odd and even denominations serving a labeling purpose.
-	If $\mathbf{v}_{i_l} \in  {V}_{e_l}$ denotes a vertex from the approximation set at level $l$, we refer to its corresponding scaling vector of coefficients by using the $\mathbf{s}_{l,\mathbf{v}_{i_l}}$ notation. The same convention will also be used to denote the scaling functions, i.e. $\phi_{l,\mathbf{v}_{i_l}}$. The situation is identical for the detail components, which correspond to the odd samples, $\mathbf{v}_{j_l} \in V_{o_l}$, at level $l$. The detail vector associated with $\mathbf{v}_{j_l}$ will be denoted by $\mathbf{w}_{l,\mathbf{v}_{j_l}}$, while for the wavelet functions the $\psi_{l,\mathbf{v}_{j_l}}$ notation will be adopted. Using these conventions, we can express the equivalent \emph{multiresolution decomposition equation for graphs} as
+	If $\mathbf{v}_{i_l} \in  {V}_{e_l}$ denotes a vertex from the approximation set at level $l$, we refer to its corresponding scaling vector of coefficients by using the $\mathbf{s}_{l,\mathbf{v}_{i_l}}$ notation. At the highest level of resolution, $L$, we assimilate the scaling vector to the vertex coordinates, i.e. $\mathbf{s}_{L, \mathbf{v}_{i_L}} := \mathbbm{1}(\mathbf{v}_{i_L})^\intercal$. We adopt the same convention for denoting the scaling functions, i.e. $\phi_{l,\mathbf{v}_{i_l}}$, which are scalar valued. The situation is identical for the detail components, which correspond to the odd samples, $\mathbf{v}_{j_l} \in V_{o_l}$, at level $l$. The detail vector associated with $\mathbf{v}_{j_l}$ will be denoted by $\mathbf{w}_{l,\mathbf{v}_{j_l}}$, while for the wavelet functions the $\psi_{l,\mathbf{v}_{j_l}}$ notation will be adopted. Using these conventions, we can express the equivalent \emph{multiresolution decomposition equation for graphs} as
 	\begin{equation}
-	F(\mathbf{x}) = \sum_{l \geq 0 } \sum_{\mathbf{v}_o \in V_{o_l}} \mathbf{w}_{l,\mathbf{v}_o} \psi_{l, \mathbf{v}_o } (\mathbf{x}) + \sum_{\mathbf{v}_e \in V_{e_l} } \mathbf{s}_{0, \mathbf{v}_e} \phi_{0, \mathbf{v}_e}(\mathbf{x}),
+	F(\mathbf{v}) = \sum_{l \geq 0 } \sum_{\mathbf{v}_o \in V_{o_l}} \mathbf{w}_{l,\mathbf{v}_o} \psi_{l, \mathbf{v}_o } (\mathbf{v}) + \sum_{\mathbf{v}_e \in V_{e_l} } \mathbf{s}_{0, \mathbf{v}_e} \phi_{0, \mathbf{v}_e}(\mathbf{v}).
 	\label{eq_cds:multiresolution_surface}
 	\end{equation}
-	where $\mathbf{x} \in M$ and $F$ is an abstract signal/function defined over the manifold.
 	
 	
 	By arranging the scaling and wavelet functions into row vectors, we reproduce equations (\ref{eq_cds:phi_j}) and (\ref{eq_cds:psi_j}), establishing the relationship at consecutive resolution levels through the means of prediction and update filters, i.e.
@@ -328,7 +327,7 @@
 	\label{eq_cds:update_functions}
 	\end{equation}
 	where $\mathbf{P}_l$ is the $|V_{o_{l+1}}| \times |V_{e_{l+1}}|$ prediction filter matrix and $\mathbf{U}_l$ is the  $|V_{e_{l+1}}| \times |V_{o_{l+1}}|$ update filter matrix.
-	Using the above filter matrices, a hierarchical decomposition of the scaling coefficients associated with the mesh vertices can be inferred. This vector-valued coefficients contain both the geometric and attribute coordinates of their associated vertices. Let us denote by $\mathbf{s}_{l,V_{e_l}}$ the matrix of scaling coefficients at level $l$ associated with the even nodes, $V_{e_l}$, the difference vectors computation and even node updates can be written as
+	Using the above filter matrices, a hierarchical decomposition of the scaling coefficients associated with the vertices of a mesh or a graph can be inferred. These vector-valued coefficients contain both the geometric and attribute coordinates of their corresponding vertices. Let us denote by $\mathbf{s}_{l,V_{e_l}}$ the $|V_{e_l}| \times n$ matrix of scaling coefficients at level $l$ associated with the even nodes, $V_{e_l}$, the difference vectors computation and even node updates can be written as
 	
 	\begin{equation}
 	\mathbf{w}_{l,V_{o_{l+1}}} = \mathbf{s}_{l+1,V_{o_{l+1}}} - \mathbf{P}_l \mathbf{s}_{l+1,V_{e_{l+1}}},
@@ -542,7 +541,7 @@
 	\label{eq_cds:update_vector_one_ring}
 	\end{equation}
 	In case the prediction filter weights correspond to the umbrella operator type of Laplacian, the second term in equation (\ref{eq_cds:update_vector_one_ring}) vanishes. Generally, this design requires storing update weights for both difference vectors and even nodes from the previous level, thus becoming a more memory consuming approach.
-	By aiming to directly preserve the one-ring average of the scaling coefficients, it becomes more difficult to find update weights that depend only on the difference vectors. This is due to the fact that determining such weights implies solving a sparse system involving all scaling coefficients. In the multi-variate scenario, this system becomes overdetermined and an exact solution may not exist. In this situation, an approximate solution must be searched for. In its terms, this is a process more complex than the entire lifting pipeline.
+	By aiming to directly preserve the one-ring average of the scaling coefficients, it becomes more difficult to find update weights that depend only on the difference vectors. This is due to the fact that determining such weights implies solving a sparse system involving all scaling coefficients. In the multivariate scenario, this system becomes overdetermined and an exact solution may not exist. In this situation, an approximate solution must be searched for. In its terms, this is a process more complex than the entire lifting pipeline.
 	
 	In \cite{Cioaca2016} we also considered the solution proposed by Jansen et al. \cite{Jansen2001}. In principle, it also exploits the average preserving requirement. This prerequisite provides a mathematical constraint that can be expressed in terms of the integrals of the scaling functions, as described for the one-dimensional context discussion. Let $\varsigma_{l,\mathbf{v}_u}$ be the integral of the scaling function $\phi_{l, \mathbf{v}_u}$ (i.e. an element 
 	of $\Phi_{l,V_{e_{l+1}}}$ corresponding to the vertex $\mathbf{v}_u \in E_l$). Rewriting equation (\ref{eq_cds:int_scaling}), we obtain
@@ -645,7 +644,7 @@
 	Other quadric error matrix redistribution weights choices  and strategies are possible and were analyzed in \cite{Cioaca2015} and \cite{Cioaca2016UPB}. Experimentally, the choice of weights presented through equation (\ref{eq_cds:qem_weights}) was determined to achieve, on average, slightly more accurate approximations than the alternatives presented in \cite{Cioaca2016UPB}.
 	
 	
-	\section{Numerical and visual experiments}
+	\section{Results and discussion}
 	
 	We assessed the validity and efficiency of our method through a series of experiments involving three different LiDAR sets. The first model is a scan fragment of the Great Smoky Mountains (available through the {\url{www.opentopography.org/}} portal) with a density of approximately 2.23 points per square meter and a size of 280,000 points (figure \ref{fig_cds:smokey_lod_rmse}).  The second set is larger and much denser at approximately 20 points per square meter and a count of 9 million (figure \ref{fig_cds:fundata_lod_rmse}). 
 	The third set is larger but less denser, consisting of 11.5 million points, at a density of 5 points per square meter (figure \ref{fig_cds:iezer_lod_rmse}). These larger and denser LiDAR samples were acquired through custom aerial scans conducted over two regions of the Romanian Carpathians. All terrain samples contain both geometry (point coordinates) and attribute information (i.e., vegetation type, as a scalar between 0 and 20, and height above ground, as a scalar between 0 and 30).
@@ -665,7 +664,7 @@
 	
 	For the multiresolution representation experiments, we have also considered several prediction and update filter designs. In this respect, we labeled the result sets according to the type of prediction and update filters as follows:
 	\begin{itemize}
-		\item{\emph{prediction filters}}: uniform weights obtained by using the unweighted graph Laplacian (\textbf{UG}), used in several works such as those of Martinez and Ortega \cite{Martinez2011} and of \cite{AbdulRahman2013}, the cotangent Laplacian weights (\textbf{CL}), also used Abdul-Rahman et al., the Fujiwara or geometric Laplacian (\textbf{GL}), which is our proposal for a Laplacian design for multi-variate data and a constrained  non-negative least squares weights design (abbreviated as \textbf{NNLS}), which we propose in order to minimize the detail vector norms.
+		\item{\emph{prediction filters}}: uniform weights obtained by using the unweighted graph Laplacian (\textbf{UG}), used in several works such as those of Martinez and Ortega \cite{Martinez2011} and of \cite{AbdulRahman2013}, the cotangent Laplacian weights (\textbf{CL}), also used Abdul-Rahman et al., the Fujiwara or geometric Laplacian (\textbf{GL}), which is our proposal for a Laplacian design for multivariate data and a constrained  non-negative least squares weights design (abbreviated as \textbf{NNLS}), which we propose in order to minimize the detail vector norms.
 		\item{\emph{update filters}}: the filter design proposed by Martinez and Ortega \cite{Martinez2011} compensates for the detail loss incurred by the removal of the "odd" vertices, but it does not preserve the graph signal average for weighted graphs, unless all weights are uniform. On the other hand, the design used in \cite{Jansen2001,Wagner2005}, achieves this goal while minimizing the norm of the update coefficient vectors. To distinguish between the first option and the minimum norm update weights, we have added the \textbf{MN} suffix to the prediction filter abbreviation. The third and final design option, proposed in \cite{AbdulRahman2013}, preserves the local, one-ring mean of the data samples  and is abbreviated as \textbf{ORMP}.
 	\end{itemize}
 	
@@ -739,7 +738,7 @@
 			Difference vector magnitude across 5 consecutive analysis passes of the Kauai fragment \ref{fig_cds:Kauai}. The (a) subplot reveals the height above ground of the initial terrain points, while the (b) subplot contains markers indicating the strength (size) and frequency band of the resulting difference vectors at each of the odd vertices present in the (a) subplot. The regions in (a) with abrupt variations register a high frequency footprint, while similar points clustered together register lower frequency signatures as well. }
 	\end{figure}
 	
-	\subsection{Discussion and conclusions}
+	\section{Conclusions}
 	Several conclusions can be drawn by analyzing the results obtained using the different lifting designs. First, by using the update designs that are not guaranteed to preserve the signal average for general graphs (e.g. \cite{ Martinez2011}), we observe the RMSE levels have the highest values, regardless of the prediction filter design. As such, the charts \ref{fig_cds:smokey_lod_rmse}a, \ref{fig_cds:fundata_lod_rmse}a and \ref{fig_cds:iezer_lod_rmse}a reveal that over a progression of 12 analysis steps, the uniform weighing prediction design (\textbf{UG}) is, on average, the better choice. While the geometric Laplacian (\textbf{GL}) and the non-negative least squares weights (\textbf{NNLS}) yield better quality results, after  6 or 7 decomposition steps they become unstable. The use of the cotangent Laplacian weights (\textbf{CL}) is not justified either, since this design takes into account only the geometric structure of the data, regardless of the attribute variability. Overall, both uniform and cotangent Laplacian weights produce more stable results, but the uniform design is to be preferred due to its consistently lower RMSE levels. Next, directly preserving the average of the scale coefficients in a one-ring neighborhood (\textbf{ORMP}) contributes to both  stability and error-minimizing properties of the analysis sequence for all sets (charts \ref{fig_cds:smokey_lod_rmse}b, \ref{fig_cds:fundata_lod_rmse}b and \ref{fig_cds:iezer_lod_rmse}b). The best results are, however, achieved through the use of the minimum norm, mean preserving update weights (proposed by Jansen et al. \cite{Jansen2001}). This design ensures the highest stability while sensibly decreasing the mean square error. More specifically, for all terrain sets the \textbf{ORMP} design is surpassed by the combined use of Laplacian prediction weights and the minimum norm update vector coefficients. Both of our proposals, the geometric Laplacian (\textbf{GLMN}) and the non-negative least squares (\textbf{NNLSMN}) attain an almost twofold accuracy over the cotangent (\textbf{CLMN}) and uniform weights Laplacian (\textbf{UGMN}). While the RMSE could be reduced even further by lifting the constraints on the least squares prediction filter, as proposed in \cite{Wagner2005} and in \cite{Martinez2011}, the scheme becomes numerically unstable due to both the potentially very high values of the weights and the prediction of the boundary vertices. While we can fix the boundary vertices and alleviate the stability issue, our design does not require such vertex selection constraints to be applied.
 	
 	The multiresolution experiments conducted with the three samples also confirm the 25\% reduction ratio of the number of vertices after each downsampling step. More specifically, the average reduction rate attained for the Smoky set (figure \ref{fig_cds:smokey_lod_rmse}) is 27\%, for the high-density Carpathian set (figure \ref{fig_cds:fundata_lod_rmse}) the average ratio is 28\%, and for the low-density Carpathian set (figure \ref{fig_cds:iezer_lod_rmse})  this average ratio is 27\%.
