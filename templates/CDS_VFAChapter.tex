@@ -241,7 +241,7 @@
 	\tilde{\Psi}_j^\intercal & = & \tilde{\Phi}_{j+1,o}^\intercal - \mathbf{P}_j \tilde{\Phi}_{j+1,e}^\intercal, \\
 	\tilde{\Phi}_j^\intercal & = & \tilde{\Phi}_{j+1,e}^\intercal + \mathbf{U}_j \tilde{\Psi}_j^\intercal  =  (\mathbf{I} - \mathbf{U}_j\mathbf{P}_j) \tilde{\Phi}_{j+1,e}^\intercal + \mathbf{U}_j  \tilde{\Phi}_{j+1,o}^\intercal.
 	\end{eqnarray}
-	To deduct similar relations between the primal basis functions, we can start by rewriting equation (\ref{eq_cds:f_in_j}) as
+	To derive similar relations between the primal basis functions, we can start by rewriting equation (\ref{eq_cds:f_in_j}) as
 	\begin{equation}
 	\begin{bmatrix} \Phi_{j+1,o} & \Phi_{j+1,e} \end{bmatrix} \begin{bmatrix} \mathbf{s}_{j+1,o} \\ \mathbf{s}_{j+1,e} \end{bmatrix} = 
 	\begin{bmatrix}\Psi_j & \Phi_j \end{bmatrix} \begin{bmatrix} \mathbf{w}_j \\ \mathbf{s}_j \end{bmatrix},
@@ -252,16 +252,16 @@
 	\begin{bmatrix}\Psi_j & \Phi_j \end{bmatrix} \begin{bmatrix}  \mathbf{s}_{j+1,o} - \mathbf{P}_j \mathbf{s}_{j+1,e} \\ (\mathbf{I} - \mathbf{U}_j \mathbf{P}_j)\mathbf{s}_{j+1,e} + \mathbf{U}_j \mathbf{s}_{j+1,o} \end{bmatrix}.
 	\label{eq_cds:lifting_matrix_form}
 	\end{equation}
-	Equation (\ref{eq_cds:lifting_matrix_form}) must hold for any combination of the level $j+1$ lifting coefficients. Hence, let $\mathbf{s}_{j+1,e} = \boldsymbol{\delta}_k$, i.e. the Kronecker vector at index $k$, with $k \in \overline{1:n_e}$, i.e. $\delta_{k,i} = 0, \forall k \neq i$ and $\delta_{k,k} = 1$. Also, let $\mathbf{s}_{j+1,o} = \mathbf{0}$. Evaluating both sides of equation (\ref{eq_cds:lifting_matrix_form}), we arrive to
+	Equation (\ref{eq_cds:lifting_matrix_form}) must hold for any combination of the level $j+1$ lifting coefficients. Hence, let $\mathbf{s}_{j+1,e} = \boldsymbol{\delta}_k$, i.e. the Kronecker unit vector at index $k$, with $k \in {1:n_e}$, i.e. $\delta_{k,i} = 0, \forall k \neq i$ and $\delta_{k,k} = 1$. Also, let $\mathbf{s}_{j+1,o} = \mathbf{0}$. Evaluating both sides of equation (\ref{eq_cds:lifting_matrix_form}), we arrive to
 	\begin{equation}
-	\Phi_{j+1,e}\delta_k = -\Psi_j\mathbf{P}_j\delta_k + \Phi_j \delta_k - \Phi_j \mathbf{U}_j\mathbf{P}_j \delta_k,
+	\Phi_{j+1,e}\delta_k = -\Psi_j\mathbf{P}_j\boldsymbol{\delta_k} + \Phi_j \boldsymbol{\delta_k} - \Phi_j \mathbf{U}_j\mathbf{P}_j \boldsymbol{\delta_k},
 	\end{equation}
-	or, since this equation holds for any $k \in \overline{1: n_e}$, a more direct formulation can be written as
+	or, since this equation holds for any $k \in {1: n_e}$, a more direct formulation can be written as
 	\begin{equation}
 	\Phi_{j+1,e}= -\Psi_j\mathbf{P}_j + \Phi_j  - \Phi_j \mathbf{U}_j\mathbf{P}_j.
 	\label{eq_cds:even_primal}
 	\end{equation}
-	By setting $\mathbf{s}_{j+1,e} = \mathbf{0}$ and $\mathbf{s}_{j+1,o} = \delta_k$, with $k \in \overline{1, n_o}$, we find that
+	By setting $\mathbf{s}_{j+1,e} = \mathbf{0}$ and $\mathbf{s}_{j+1,o} = \delta_k$, with $k \in {1: n_o}$, we find that
 	\begin{equation}
 	\Phi_{j+1,o}\delta_k  = \Psi_j \delta_k + \Phi_j \mathbf{U}_j \delta_k,
 	\end{equation}
@@ -350,7 +350,7 @@
 	\label{eq_cds:synthesis_even}
 	\end{equation}
 	Cascading the analysis stages yields a hierarchical wavelet decomposition of the initial mesh. The method stores the intermediary difference vectors $\mathbf{w}_{l,V_{o_{l+1}}}$ and the 
-	coarsest level scaling coefficients, $\mathbf{s}_{0, V_{e_0}}$, with $l \in \overline{0:L}$. In order to recover the initial information, the intermediary filter matrices, $\mathbf{P}_l$ and
+	coarsest level scaling coefficients, $\mathbf{s}_{0, V_{e_0}}$, with $l \in {0:L}$. In order to recover the initial information, the intermediary filter matrices, $\mathbf{P}_l$ and
 	$\mathbf{U}_l$, also need to be stored.
 	
 	\subsection{Graph-based lifting scheme operations}
@@ -362,10 +362,10 @@
 	
 	
 	Let $\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3 \in \mathbb{R}^n$ be column vectors corresponding to the vertices of a triangle and $\mathbf{p} \in \mathbb{R}^n$  an arbitrary point.
-	The core idea of this approach is to algebraically express as a matrix, denoted by $\mathbf{Q}(\Delta(\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3))$, the computation of the squared distance from  $\mathbf{p}$ to the support plane of these 3 vertices. It is then easy to compute the sum of squared distances from $\mathbf{p}$ to  the support planes of a triangle family, $\left( \Delta_i(\mathbf{v}_{1}, \mathbf{v}_{2}, \mathbf{v}_{3}) \right)_{i=\overline{1,N}}$, as
+	The core idea of this approach is to algebraically express as a matrix, denoted by $\mathbf{Q}(\Delta(\mathbf{v}_1, \mathbf{v}_2, \mathbf{v}_3))$, the computation of the squared distance from  $\mathbf{p}$ to the support plane of these 3 vertices. It is then easy to compute the sum of squared distances from $\mathbf{p}$ to  the support planes of a triangle family, $\left( \Delta_i(\mathbf{v}_{1}, \mathbf{v}_{2}, \mathbf{v}_{3}) \right)_{i={1:N}}$, as
 	\begin{equation}
-	\sum\limits_{i=\overline{1,N}}{d(\mathbf{p},  \Delta_i(\mathbf{v}_{1}, \mathbf{v}_{2}, \mathbf{v}_{3}) )^2 } = 
-	\begin{pmatrix} \mathbf{p} \\ 1 \end{pmatrix}^\intercal \left\{  \sum\limits_{i=\overline{1,N}} \mathbf{Q}\left(  \Delta_i(\mathbf{v}_{1}, \mathbf{v}_{2}, \mathbf{v}_{3}) \right) \right\} \begin{pmatrix} \mathbf{p} \\ 1 \end{pmatrix}.
+	\sum\limits_{i={1:N}}{d(\mathbf{p},  \Delta_i(\mathbf{v}_{1}, \mathbf{v}_{2}, \mathbf{v}_{3}) )^2 } = 
+	\begin{pmatrix} \mathbf{p} \\ 1 \end{pmatrix}^\intercal \left\{  \sum\limits_{i={1:N}} \mathbf{Q}\left(  \Delta_i(\mathbf{v}_{1}, \mathbf{v}_{2}, \mathbf{v}_{3}) \right) \right\} \begin{pmatrix} \mathbf{p} \\ 1 \end{pmatrix}.
 	\label{eq_cds:quadric_addition}
 	\end{equation}
 	In the original incremental simplification algorithm \cite{Garland1998}, the set of faces in the one-ring neighborhood of each vertex is used to compute an associated matrix
@@ -664,8 +664,8 @@
 	
 	For the multiresolution representation experiments, we have also considered several prediction and update filter designs. In this respect, we labeled the result sets according to the type of prediction and update filters as follows:
 	\begin{itemize}
-		\item{\emph{prediction filters}}: uniform weights obtained by using the unweighted graph Laplacian (\textbf{UG}), used in several works such as those of Martinez and Ortega \cite{Martinez2011} and of \cite{AbdulRahman2013}, the cotangent Laplacian weights (\textbf{CL}), also used Abdul-Rahman et al., the Fujiwara or geometric Laplacian (\textbf{GL}), which is our proposal for a Laplacian design for multivariate data and a constrained  non-negative least squares weights design (abbreviated as \textbf{NNLS}), which we propose in order to minimize the detail vector norms.
-		\item{\emph{update filters}}: the filter design proposed by Martinez and Ortega \cite{Martinez2011} compensates for the detail loss incurred by the removal of the "odd" vertices, but it does not preserve the graph signal average for weighted graphs, unless all weights are uniform. On the other hand, the design used in \cite{Jansen2001,Wagner2005}, achieves this goal while minimizing the norm of the update coefficient vectors. To distinguish between the first option and the minimum norm update weights, we have added the \textbf{MN} suffix to the prediction filter abbreviation. The third and final design option, proposed in \cite{AbdulRahman2013}, preserves the local, one-ring mean of the data samples  and is abbreviated as \textbf{ORMP}.
+		\item{\emph{prediction filters}}: uniform weights obtained by using the unweighted graph Laplacian ({UG}), present in the design of Martinez and Ortega \cite{Martinez2011}, the cotangent Laplacian weights ({CL}), chosen by Abdul-Rahman et al. \cite{AbdulRahman2013}, the Fujiwara or geometric Laplacian ({GL}), which is our proposal for a Laplacian design for multivariate data and a constrained  non-negative least squares weights design (abbreviated as {NNLS}), which we propose in order to minimize the detail vector norms.
+		\item{\emph{update filters}}: the filter design proposed by Martinez and Ortega \cite{Martinez2011} compensates for the detail loss incurred by the removal of the "odd" vertices, but it does not preserve the graph signal average for weighted graphs, unless all weights are uniform. On the other hand, the design used in \cite{Jansen2001,Wagner2005}, achieves this goal while minimizing the norm of the update coefficient vectors. To distinguish between the first option and the minimum norm update weights, we have added the {MN} suffix to the prediction filter abbreviation. The third and final design option, proposed in \cite{AbdulRahman2013}, preserves the local, one-ring mean of the data samples  and is abbreviated as {ORMP}.
 	\end{itemize}
 	
 	\begin{figure*}[!htbp]
@@ -675,7 +675,7 @@
 		\includegraphics{smokey_lod_rmse.pdf}
 		
 		\caption{\label{fig_cds:smokey_lod_rmse}%
-			Smoky Mountains fragment. Top row, left to right: shape and attribute evolution at levels 0, 12 and 24 using the \textbf{UG} filters. Bottom row: comparative charts for the RMSE evolution across 12 analysis sequences. }
+			Smoky Mountains fragment. Top row, left to right: shape and attribute evolution at levels 0, 12 and 24 using the {UG} filters. Bottom row: comparative charts for the RMSE evolution across 12 analysis sequences. }
 	\end{figure*}
 	
 	\begin{figure*}[!htbp]
@@ -685,7 +685,7 @@
 		\includegraphics{fundata_lod_rmse.pdf}
 		
 		\caption{\label{fig_cds:fundata_lod_rmse}%
-			High-density Carpathian Mountains fragment.  Top row, left to right: shape and attribute evolution at levels 0, 12 and 24 the \textbf{UG} filters. Bottom row: comparative charts for the RMSE evolution across 12 analysis sequences. }
+			High-density Carpathian Mountains fragment.  Top row, left to right: shape and attribute evolution at levels 0, 12 and 24 the {UG} filters. Bottom row: comparative charts for the RMSE evolution across 12 analysis sequences. }
 	\end{figure*}
 	
 	\begin{figure*}[!htbp]
@@ -695,7 +695,7 @@
 		\includegraphics{iezer_lod_rmse.pdf}
 		
 		\caption{\label{fig_cds:iezer_lod_rmse}%
-			Low-density Carpathian Mountains fragment.  Top row, left to right: shape and attribute evolution at levels 0, 12 and 24 the \textbf{UG} filters. Bottom row: comparative charts for the RMSE evolution across 12 analysis sequences. }
+			Low-density Carpathian Mountains fragment.  Top row, left to right: shape and attribute evolution at levels 0, 12 and 24 the {UG} filters. Bottom row: comparative charts for the RMSE evolution across 12 analysis sequences. }
 	\end{figure*}
 	
 	\subsection{Feature selectivity and robustness to noise}
@@ -732,14 +732,14 @@
 	
 	\begin{figure}[!htbp]
 		\centering
-		\includegraphics[width=1\linewidth]{figs/KauaiVFA.pdf}
+		\includegraphics[width=1\linewidth]{figs/KauaiVFA_plot.pdf}
 		%
 		\caption{\label{fig_cds:diff_vector_5}
 			Difference vector magnitude across 5 consecutive analysis passes of the Kauai fragment \ref{fig_cds:Kauai}. The (a) subplot reveals the height above ground of the initial terrain points, while the (b) subplot contains markers indicating the strength (size) and frequency band of the resulting difference vectors at each of the odd vertices present in the (a) subplot. The regions in (a) with abrupt variations register a high frequency footprint, while similar points clustered together register lower frequency signatures as well. }
 	\end{figure}
 	
 	\section{Conclusions}
-	Several conclusions can be drawn by analyzing the results obtained using the different lifting designs. First, by using the update designs that are not guaranteed to preserve the signal average for general graphs (e.g. \cite{ Martinez2011}), we observe the RMSE levels have the highest values, regardless of the prediction filter design. As such, the charts \ref{fig_cds:smokey_lod_rmse}a, \ref{fig_cds:fundata_lod_rmse}a and \ref{fig_cds:iezer_lod_rmse}a reveal that over a progression of 12 analysis steps, the uniform weighing prediction design (\textbf{UG}) is, on average, the better choice. While the geometric Laplacian (\textbf{GL}) and the non-negative least squares weights (\textbf{NNLS}) yield better quality results, after  6 or 7 decomposition steps they become unstable. The use of the cotangent Laplacian weights (\textbf{CL}) is not justified either, since this design takes into account only the geometric structure of the data, regardless of the attribute variability. Overall, both uniform and cotangent Laplacian weights produce more stable results, but the uniform design is to be preferred due to its consistently lower RMSE levels. Next, directly preserving the average of the scale coefficients in a one-ring neighborhood (\textbf{ORMP}) contributes to both  stability and error-minimizing properties of the analysis sequence for all sets (charts \ref{fig_cds:smokey_lod_rmse}b, \ref{fig_cds:fundata_lod_rmse}b and \ref{fig_cds:iezer_lod_rmse}b). The best results are, however, achieved through the use of the minimum norm, mean preserving update weights (proposed by Jansen et al. \cite{Jansen2001}). This design ensures the highest stability while sensibly decreasing the mean square error. More specifically, for all terrain sets the \textbf{ORMP} design is surpassed by the combined use of Laplacian prediction weights and the minimum norm update vector coefficients. Both of our proposals, the geometric Laplacian (\textbf{GLMN}) and the non-negative least squares (\textbf{NNLSMN}) attain an almost twofold accuracy over the cotangent (\textbf{CLMN}) and uniform weights Laplacian (\textbf{UGMN}). While the RMSE could be reduced even further by lifting the constraints on the least squares prediction filter, as proposed in \cite{Wagner2005} and in \cite{Martinez2011}, the scheme becomes numerically unstable due to overfitting of the prediction weights values and the prediction of the boundary vertices. While we can fix the boundary vertices and alleviate the stability issue, our design does not require such vertex selection constraints to be applied.
+	Several conclusions can be drawn by analyzing the results obtained using the different lifting designs. First, by using the update designs that are not guaranteed to preserve the signal average for general graphs (e.g. \cite{ Martinez2011}), we observe the RMSE levels have the highest values, regardless of the prediction filter design. As such, the charts \ref{fig_cds:smokey_lod_rmse}a, \ref{fig_cds:fundata_lod_rmse}a and \ref{fig_cds:iezer_lod_rmse}a reveal that over a progression of 12 analysis steps, the uniform weighing prediction design ({UG}) is, on average, the better choice. While the geometric Laplacian ({GL}) and the non-negative least squares weights ({NNLS}) yield better quality results, after  6 or 7 decomposition steps they become unstable. The use of the cotangent Laplacian weights ({CL}) is not justified either, since this design takes into account only the geometric structure of the data, regardless of the attribute variability. Overall, both uniform and cotangent Laplacian weights produce more stable results, but the uniform design is to be preferred due to its consistently lower RMSE levels. Next, directly preserving the average of the scale coefficients in a one-ring neighborhood ({ORMP}) contributes to both  stability and error-minimizing properties of the analysis sequence for all sets (charts \ref{fig_cds:smokey_lod_rmse}b, \ref{fig_cds:fundata_lod_rmse}b and \ref{fig_cds:iezer_lod_rmse}b). The best results are, however, achieved through the use of the minimum norm, mean preserving update weights (proposed by Jansen et al. \cite{Jansen2001}). This design ensures the highest stability while sensibly decreasing the mean square error. More specifically, for all terrain sets the {ORMP} design is surpassed by the combined use of Laplacian prediction weights and the minimum norm update vector coefficients. Both of our proposals, the geometric Laplacian ({GLMN}) and the non-negative least squares ({NNLSMN}) attain an almost twofold accuracy over the cotangent ({CLMN}) and uniform weights Laplacian ({UGMN}). While the RMSE could be reduced even further by lifting the constraints on the least squares prediction filter, as proposed in \cite{Wagner2005} and in \cite{Martinez2011}, the scheme becomes numerically unstable due to overfitting of the prediction weights values and the prediction of the boundary vertices. While we can fix the boundary vertices and alleviate the stability issue, our design does not require such vertex selection constraints to be applied.
 	
 	The multiresolution experiments conducted with the three samples also confirm the 25\% reduction ratio of the number of vertices after each downsampling step. More specifically, the average reduction rate attained for the Smoky set (figure \ref{fig_cds:smokey_lod_rmse}) is 27\%, for the high-density Carpathian set (figure \ref{fig_cds:fundata_lod_rmse}) the average ratio is 28\%, and for the low-density Carpathian set (figure \ref{fig_cds:iezer_lod_rmse})  this average ratio is 27\%.
 	
