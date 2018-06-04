@@ -310,7 +310,7 @@
 	The odd-even split is extended to graph vertices, denoting $V_{o_l}$ and $V_{e_l}$
 	the odd and even subsets at level $l$, respectively.
 	The notion of parity is irrelevant for graphs, the odd and even denominations serving a labeling purpose.
-	If $\mathbf{v}_{i_l} \in  {V}_{e_l}$ denotes a vertex from the approximation set at level $l$, we refer to its corresponding scaling vector of coefficients by using the $\mathbf{s}_{l,\mathbf{v}_{i_l}}$ notation. At the highest level of resolution, $L$, we assimilate the scaling vector to the vertex coordinates, i.e. $\mathbf{s}_{L, \mathbf{v}_{i_L}} := \mathbbm{1}(\mathbf{v}_{i_L})^\intercal$. We adopt the same convention for denoting the scaling functions, i.e. $\phi_{l,\mathbf{v}_{i_l}}$, which are scalar valued. The situation is identical for the detail components, which correspond to the odd samples, $\mathbf{v}_{j_l} \in V_{o_l}$, at level $l$. The detail vector associated with $\mathbf{v}_{j_l}$ will be denoted by $\mathbf{w}_{l,\mathbf{v}_{j_l}}$, while for the wavelet functions the $\psi_{l,\mathbf{v}_{j_l}}$ notation will be adopted. Using these conventions, we can express the equivalent \emph{multiresolution decomposition equation for graphs} as
+	If $\mathbf{v}_{i_l} \in  {V}_{e_l}$ denotes a vertex from the approximation set at level $l$, we refer to its corresponding scaling vector of coefficients by using the $\mathbf{s}_{l,\mathbf{v}_{i_l}}$ notation. At the highest level of resolution, $L$, we assimilate the scaling vector to the vertex coordinates, i.e. $\mathbf{s}_{L, \mathbf{v}_{i_L}} := \mathbf{v}_{i_L}^\intercal$. We adopt the same convention for denoting the scaling functions, i.e. $\phi_{l,\mathbf{v}_{i_l}}$, which are scalar valued. The situation is identical for the detail components, which correspond to the odd samples, $\mathbf{v}_{j_l} \in V_{o_l}$, at level $l$. The detail vector associated with $\mathbf{v}_{j_l}$ will be denoted by $\mathbf{w}_{l,\mathbf{v}_{j_l}}$, while for the wavelet functions the $\psi_{l,\mathbf{v}_{j_l}}$ notation will be adopted. Using these conventions, we can express the equivalent \emph{multiresolution decomposition equation for graphs} as
 	\begin{equation}
 	F(\mathbf{v}) = \sum_{l \geq 0 } \sum_{\mathbf{v}_o \in V_{o_l}} \mathbf{w}_{l,\mathbf{v}_o} \psi_{l, \mathbf{v}_o } (\mathbf{v}) + \sum_{\mathbf{v}_e \in V_{e_l} } \mathbf{s}_{0, \mathbf{v}_e} \phi_{0, \mathbf{v}_e}(\mathbf{v}).
 	\label{eq_cds:multiresolution_surface}
@@ -438,24 +438,26 @@
 		\includegraphics[width=.8\linewidth]{one-RingCost.pdf}
 		%
 		\caption{\label{fig_cds:oneRingCost}
-			The cost of removing $\mathbf{v}_i$ with respect to its one-ring neighbours. Each $\mathbf{v}_j \in \mathcal{N}_v^1(\mathbf{v}_i)$ contributes
+			The cost of removing $\mathbf{v}_i$ with respect to its one-ring neighbors. Each $\mathbf{v}_j \in \mathcal{N}_v^1(\mathbf{v}_i)$ contributes
 			the sum of distances from $\mathbf{v}_i$ to the support planes of each incident face at $\mathbf{v}_j$.}
 	\end{figure}
 	
 	The purpose of computing the per-vertex cost values is to establish an importance-based ordering of this set. The greedy strategy we employ to label all vertices as either even or odd is summarized in algorithm \ref{alg_cds:labelling}. The labeling process is iterative and marks the vertices intuitively, according to their computed importance. During each iteration, the vertex having the lowest cost is extracted from the set of unmarked vertices. Its one-ring neighbors are then colored as even, while the extracted sample is marked as odd. The intuition behind the process reflects the goal of removing less relevant samples, from high redundancy areas.
 	\begin{algorithm}[t]
 		\begin{algorithmic}
-			\STATE \texttt{INPUT}: the mesh $M=(V,E)$
-			\STATE \texttt{OUTPUT}: an "odd-even" partitioning, $V = {V_o} \cup {V_e}$, coarse mesh topology $\tilde{M}=(V_e,\tilde{E})$
-			\STATE \texttt{SORT}: $V^{*} = \mathtt{sort}(V)$ using $\mathtt{cost}(\mathbf{\bar{v}})$ as a key
-			\STATE \texttt{ASSIGN}: $V_e = \emptyset, V_o = \emptyset$, $\tilde{E} = E$
+			\STATE \texttt{INPUT}: the mesh $M_{in}=(V,E_{in})$
+			\STATE \texttt{OUTPUT}: an \emph{odd-even} partitioning, $V = {V_o} \cup {V_e}$, coarse mesh topology ${M}_{out}=(V_e,{E}_{out})$
+			\STATE \texttt{COMPUTE}: for each $\mathbf{v} \in V$, compute $E_{bending}(\mathbf{v})$ via algorithm \ref{alg_cds:thin_plate_energy} 
+			\STATE \texttt{COMPUTE}: for each $\mathbf{v} \in V$, compute $\mathtt{cost}(\mathbf{\bar{v}})$ as defined in (\ref{eq_cds:vertex_cost}), where $\mathbf{\bar{v}} = \begin{pmatrix}\mathbf{v}^\intercal, & E_{bending}(\mathbf{v})\end{pmatrix}^\intercal$
+			\STATE \texttt{SORT}: $V^{*} = \mathtt{sort}(V+{in})$ using $\mathtt{cost}(\mathbf{\bar{v}})$ as a key
+			\STATE \texttt{ASSIGN}: $V_e = \emptyset, V_o = \emptyset$, ${E}_{out} = E_{in}$
 			\WHILE { $ V^{*} \neq \emptyset $ }
-			\STATE $\mathbf{v} = \arg\min\limits_{\mathbf{v} \in V^{*}}(\mathtt{cost}(\mathbf{v}))$
+			\STATE $\mathbf{v} = \arg\min\limits_{\mathbf{v} \in V^{*}}(\mathtt{cost}(\mathbf{\bar{v}}))$
 			\IF { \texttt{can\_triangulate}($\mathcal{N}_v^1(\mathbf{v}) \setminus \{\mathbf{v}\}$) }
 			\FOR{$\mathbf{v}_i \in \mathcal{N}_v^1(\mathbf{v})$}
-			\STATE $\tilde{E} = \tilde{E} \setminus \{\overline{\mathbf{v}, \mathbf{v}_i}\}$
+			\STATE ${E}_{out} = {E}_{out} \setminus \{\overline{\mathbf{v}, \mathbf{v}_i}\}$
 			\ENDFOR
-			\STATE $\tilde{E} = \tilde{E} \cup \mathtt{create\_edges}(\mathcal{N}_v^1(\mathbf{v}))$
+			\STATE ${E}_{out} = {E}_{out} \cup \mathtt{create\_edges}(\mathcal{N}_v^1(\mathbf{v}))$
 			\STATE $V_o = V_o \cup \{\mathbf{v}\}$
 			\STATE $V_e = V_e \cup \mathcal{N}_v^1(\mathbf{v})$
 			\STATE $V^{*} = V^{*} \setminus \left( \{ \mathbf{v} \} \cup \mathcal{N}_v^1(\mathbf{v}) \right)$
@@ -509,13 +511,13 @@
 	\omega_{i,j} = {l_{i,j}}^{-1}, 
 	\label{eq_cds:fujiwara}
 	\end{equation}
-	where $l_{i,j}$ is the length of the $(\mathbf{v}_i,\mathbf{v}_j)$ edge. This operator is scale dependent and it preserves the distribution of triangle sizes. Several arguments support choosing this design are: its dependency on all geometry and range attributes, its smoothing effect being closer to the cotangent weight formulation than that of the umbrella operator, and the predicted point being shifted towards its closest neighbours, thus inherently providing a better approximation.
+	where $l_{i,j}$ is the length of the $(\mathbf{v}_i,\mathbf{v}_j)$ edge. This operator is scale dependent and it preserves the distribution of triangle sizes. The main advantages of this design are: its dependency on all geometry and range attributes, its smoothing effect being closer to the cotangent weight formulation than that of the umbrella operator, and the predicted point being shifted towards its closest neighbors, thus inherently providing a better approximation.
 	
 	An alternative to the Laplacian prediction filter is to employ a least squares fitting of the weights in order to minimize the approximation error. This approach, adopted in several works \cite{Wagner2005,Martinez2011}, proved to be numerically unstable when directly applied to terrain sets. To overcome this issue, Wagner et al. \cite{Wagner2005} did not include the boundary vertices in the downsampling process. In regions where the one-ring neighborhood does not have a convex  $(x,y)$ projection, negative weights can appear. Furthermore, the large magnitude of the weights may lead to numerical instability during the subsequent update stage. To counteract these effects, we propose  a non-negative least squares (NNLS) fitting of the weights in equation (\ref{eq_cds:prediction_vertex}), such that
 	the magnitude of the $\mathbf{w}_{l, \mathbf{v}_n}$ vector is minimized. To achieve a similar Laplacian smoothing effect, the sum $\mathlarger{\sum}_{\mathbf{v}_m \in \mathcal{N}_v^1(\mathbf{v}_n)}{ p_{l, \mathbf{v}_n}(\mathbf{v}_m)}$ should be equal to $1$. This constraint can be directly added to the NNLS solver. By design, this modification improves the root mean square error throughout the hierarchical downsampling, as it will be later discussed in the results section. We note that positive and convex weights allow for the removal of odd boundary vertices. Nevertheless, computing these weights incurs a computational penalty, so we only recommend this choice for scenarios where minimizing the approximation error is crucial.
 	
 	In terms of storage complexity,  the Laplacian matrix is very sparse. As a consequence, the prediction matrix at level $l$, $\mathbf{P}_l$, is also sparse, each of its rows being populated with the weights used to predict the same odd vertex,
-	$\mathbf{v}_n$, from its even neighbours.
+	$\mathbf{v}_n$, from its even neighbors.
 	
 	
 	%%
@@ -527,10 +529,10 @@
 	\mathbf{u}_{l, \mathbf{v}_{u}} = \frac{0.5}{ \sum\limits_{\mathbf{v}_{p,i} \in \mathcal{N}_v^1(\mathbf{v}_u) \cap V_{o_{l+1}}} {  p_{l, \mathbf{v}_{p,i} } } } \left[ p_{l, \mathbf{v}_{p,1} }, p_{l, \mathbf{v}_{p,2} }, \ldots , p_{l, \mathbf{v}_{p,k} }\right],
 	\label{eq_cds:smoothing_update_weights}
 	\end{equation}
-	where $\mathbf{v}_u$ represents an even vertex, $\mathbf{v}_{p,i}$ denotes an odd one-ring neighbour of this vertex, and $p_{l,\mathbf{v}_{p,i}} \equiv p_{l,\mathbf{v}_{p,i}}(\mathbf{v}_u)$ is the prediction weight $\mathbf{v}_u$ contributed in estimating its $\mathbf{v}_{p,i}$ odd neighbour.
+	where $\mathbf{v}_u$ represents an even vertex, $\mathbf{v}_{p,i}$ denotes an odd one-ring neighbor of this vertex, and $p_{l,\mathbf{v}_{p,i}} \equiv p_{l,\mathbf{v}_{p,i}}(\mathbf{v}_u)$ is the prediction weight $\mathbf{v}_u$ contributed in estimating its $\mathbf{v}_{p,i}$ odd neighbor.
 	By using this design, there is no guarantee the signal average will be preserved, unless applied to unweighted graphs, hence when using the umbrella operator Laplacian.
 	
-	Abdul-Rahman et al. \cite{AbdulRahman2013} proposed a similar approach where the update filter construction aims to directly preserve the average value of the one-ring neighborhood of an odd vertex before and after its removal. Using the same update vector for all even neighbours, the following equation ensues:
+	Abdul-Rahman et al. \cite{AbdulRahman2013} proposed a similar approach where the update filter construction aims to directly preserve the average value of the one-ring neighborhood of an odd vertex before and after its removal. Using the same update vector for all even neighbors, the following equation ensues:
 	\begin{eqnarray}
 	\frac{1}{ N + 1} \left( \mathbf{w}_{l, \mathbf{v}_n} + \sum\limits_{\mathbf{v}_m \in \mathcal{N}_v^1(\mathbf{v}_n) } { (  p_{l, \mathbf{v}_n}(\mathbf{v}_m) + 1 ) \mathbf{s}_{l+1, \mathbf{v}_m} } \right) = \\ \frac{1}{N} \sum\limits_{\mathbf{v}_m \in \mathcal{N}_v^1(\mathbf{v}_n) } { (  \mathbf{s}_{l+1, \mathbf{v}_m} + \mathbf{u}_{l,\mathbf{v}_m} ) } ,
 	\label{eq_cds:one_ring_average}
@@ -541,7 +543,7 @@
 	\label{eq_cds:update_vector_one_ring}
 	\end{equation}
 	In case the prediction filter weights correspond to the umbrella operator type of Laplacian, the second term in equation (\ref{eq_cds:update_vector_one_ring}) vanishes. Generally, this design requires storing update weights for both difference vectors and even nodes from the previous level, thus becoming a more memory consuming approach.
-	By aiming to directly preserve the one-ring average of the scaling coefficients, it becomes more difficult to find update weights that depend only on the difference vectors. This is due to the fact that determining such weights implies solving a sparse system involving all scaling coefficients. In the multivariate scenario, this system becomes overdetermined and an exact solution may not exist. In this situation, an approximate solution must be searched for. In its terms, this is a process more complex than the entire lifting pipeline.
+	By aiming to directly preserve the one-ring average of the scaling coefficients, it becomes more difficult to find update weights that depend only on the difference vectors. This is due to the fact that determining such weights implies solving a sparse system involving all scaling coefficients. In the multivariate scenario, this system becomes overdetermined and an exact solution may not exist. In this situation, an approximate solution must be searched for. Overall, this  process is more complex than the entire lifting pipeline.
 	
 	In \cite{Cioaca2016} we also considered the solution proposed by Jansen et al. \cite{Jansen2001}. In principle, it also exploits the average preserving requirement. This prerequisite provides a mathematical constraint that can be expressed in terms of the integrals of the scaling functions, as described for the one-dimensional context discussion. Let $\varsigma_{l,\mathbf{v}_u}$ be the integral of the scaling function $\phi_{l, \mathbf{v}_u}$ (i.e. an element 
 	of $\Phi_{l,V_{e_{l+1}}}$ corresponding to the vertex $\mathbf{v}_u \in E_l$). Rewriting equation (\ref{eq_cds:int_scaling}), we obtain
@@ -665,7 +667,7 @@
 	For the multiresolution representation experiments, we have also considered several prediction and update filter designs. In this respect, we labeled the result sets according to the type of prediction and update filters as follows:
 	\begin{itemize}
 		\item{\emph{prediction filters}}: uniform weights obtained by using the unweighted graph Laplacian ({UG}), present in the design of Martinez and Ortega \cite{Martinez2011}, the cotangent Laplacian weights ({CL}), chosen by Abdul-Rahman et al. \cite{AbdulRahman2013}, the Fujiwara or geometric Laplacian ({GL}), which is our proposal for a Laplacian design for multivariate data and a constrained  non-negative least squares weights design (abbreviated as {NNLS}), which we propose in order to minimize the detail vector norms.
-		\item{\emph{update filters}}: the filter design proposed by Martinez and Ortega \cite{Martinez2011} compensates for the detail loss incurred by the removal of the "odd" vertices, but it does not preserve the graph signal average for weighted graphs, unless all weights are uniform. On the other hand, the design used in \cite{Jansen2001,Wagner2005}, achieves this goal while minimizing the norm of the update coefficient vectors. To distinguish between the first option and the minimum norm update weights, we have added the {MN} suffix to the prediction filter abbreviation. The third and final design option, proposed in \cite{AbdulRahman2013}, preserves the local, one-ring mean of the data samples  and is abbreviated as {ORMP}.
+		\item{\emph{update filters}}: the filter design proposed by Martinez and Ortega \cite{Martinez2011} compensates for the detail loss incurred by the removal of the odd vertices, but it does not preserve the graph signal average for weighted graphs, unless all weights are uniform. On the other hand, the design used in \cite{Jansen2001,Wagner2005}, achieves this goal while minimizing the norm of the update coefficient vectors. To distinguish between the first option and the minimum norm update weights, we have added the {MN} suffix to the prediction filter abbreviation. The third and final design option, proposed in \cite{AbdulRahman2013}, preserves the local, one-ring mean of the data samples  and is abbreviated as {ORMP}.
 	\end{itemize}
 	
 	\begin{figure*}[!htbp]
@@ -707,7 +709,7 @@
 		\includegraphics[width=0.75\linewidth]{QEMvsNO.png}
 		%
 		\caption{\label{fig_cds:sharpFeatures}
-			Preservation of salient features after 8 analysis steps. Top image: high-density, high-detail input (1.6M faces), middle image (160K triangles): the combined QEM and thin plate energy cost, bottom image (158K triangles): the graph colouring strategy used in \cite{Wagner2005} and \cite{Martinez2011}. }
+			Preservation of salient features after 8 analysis steps. Top image: high-density, high-detail input (1.6M faces), middle image (160K triangles): the combined QEM and thin plate energy cost, bottom image (158K triangles): the graph coloring strategy used in \cite{Wagner2005} and \cite{Martinez2011}. }
 	\end{figure}
 	
 	
